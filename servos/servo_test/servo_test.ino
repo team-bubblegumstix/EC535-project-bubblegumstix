@@ -5,10 +5,8 @@
 
 // For defining motion of arm mapped to servo rotation values
 #define BASE_POSITION 0
-#define MAX_JAB_POSITION 180
-#define SMALL_DELAY  100
-#define MEDIUM_DELAY 500
-#define LARGE_DELAY 2000
+#define MAX_JAB_POSITION 90
+#define DELAY_TIME 1000
 
 Servo armLeft;          // Define left servo
 Servo armRight;         // Define right servo
@@ -20,17 +18,17 @@ void setup() {
 
 void loop() {            // Loop through motion tests
 
-  slowPunch(armLeft);
-  delay(LARGE_DELAY);      // Wait LARGE_DELAY milliseconds (2 seconds)
-
-  slowResetArm(armLeft);
-  delay(LARGE_DELAY);      // Wait LARGE_DELAY milliseconds (2 seconds)
+//  slowPunch(armLeft);
+//  delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
+//
+//  slowResetArm(armLeft);
+//  delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
 
   quickPunch(armLeft);
-  delay(LARGE_DELAY);      // Wait LARGE_DELAY milliseconds (2 seconds)
+  delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
 
   quickResetArm(armLeft);
-  delay(LARGE_DELAY);      // Wait LARGE_DELAY milliseconds (2 seconds)
+  delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
   
 }
 
@@ -50,41 +48,41 @@ void quickResetArm(Servo jabArm) {
 
 void slowPunch(Servo jabArm) {
   moveArm(armLeft, (MAX_JAB_POSITION * .125) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .250) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .375) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .500) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .625) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .750) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .875) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
 
 }
 
 void slowResetArm(Servo jabArm) {
   moveArm(armLeft, (MAX_JAB_POSITION * .875) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .750) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .625) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .500) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .375) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .250) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (MAX_JAB_POSITION * .125) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
   moveArm(armLeft, (BASE_POSITION) );
-  delay(LARGE_DELAY);
+  delay(DELAY_TIME);
 }
 
 
