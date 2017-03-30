@@ -3,48 +3,89 @@
 #define SERVO_PIN_LEFT 10 // Set left servo to digital pin 10
 #define SERVO_PIN_RIGHT 9 // Set right servo to digital pin 9
 
-Servo servoLeft;          // Define left servo
-Servo servoRight;         // Define right servo
+// For defining motion of arm mapped to servo rotation values
+#define BASE_POSITION 0
+#define MAX_JAB_POSITION 180
+#define SMALL_DELAY  100
+#define MEDIUM_DELAY 500
+#define LARGE_DELAY 2000
+
+Servo armLeft;          // Define left servo
+Servo armRight;         // Define right servo
 
 void setup() { 
-  servoLeft.attach(SERVO_PIN_LEFT);
-  servoRight.attach(SERVO_PIN_RIGHT);
+  armLeft.attach(SERVO_PIN_LEFT);
+//  armRight.attach(SERVO_PIN_RIGHT);
 } 
 
 void loop() {            // Loop through motion tests
-  forward();             // Example: move forward
-  delay(2000);           // Wait 2000 milliseconds (2 seconds)
-  reverse();
-  delay(2000);
-  turnRight();
-  delay(2000);
-  turnLeft();
-  delay(2000);
-  stopRobot();
-  delay(2000);
+
+  slowPunch(armLeft);
+  delay(LARGE_DELAY);      // Wait LARGE_DELAY milliseconds (2 seconds)
+
+  slowResetArm(armLeft);
+  delay(LARGE_DELAY);      // Wait LARGE_DELAY milliseconds (2 seconds)
+
+  quickPunch(armLeft);
+  delay(LARGE_DELAY);      // Wait LARGE_DELAY milliseconds (2 seconds)
+
+  quickResetArm(armLeft);
+  delay(LARGE_DELAY);      // Wait LARGE_DELAY milliseconds (2 seconds)
+  
 }
 
-// Motion routines for forward, reverse, turns, and stop
-void forward() {
-  servoLeft.write(0);
-  servoRight.write(180);
+// Motion routines
+void moveArm(Servo jabArm, int distance) {
+  jabArm.write(distance);
 }
 
-void reverse() {
-  servoLeft.write(180);
-  servoRight.write(0);
+void quickPunch(Servo jabArm) {
+  moveArm(jabArm, MAX_JAB_POSITION); // move forward to max position
 }
 
-void turnRight() {
-  servoLeft.write(180);
-  servoRight.write(180);
-}
-void turnLeft() {
-  servoLeft.write(0);
-  servoRight.write(0);
+// reset arm to base
+void quickResetArm(Servo jabArm) {
+  moveArm(jabArm, BASE_POSITION);    // reset back to base position
 }
 
-void stopRobot() {
-  servoLeft.write(90);
-  servoRight.write(90);
+void slowPunch(Servo jabArm) {
+  moveArm(armLeft, (MAX_JAB_POSITION * .125) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .250) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .375) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .500) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .625) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .750) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .875) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION) );
+  delay(LARGE_DELAY);
+
 }
+
+void slowResetArm(Servo jabArm) {
+  moveArm(armLeft, (MAX_JAB_POSITION * .875) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .750) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .625) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .500) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .375) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .250) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (MAX_JAB_POSITION * .125) );
+  delay(LARGE_DELAY);
+  moveArm(armLeft, (BASE_POSITION) );
+  delay(LARGE_DELAY);
+}
+
+
+
