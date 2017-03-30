@@ -4,9 +4,9 @@
 #define SERVO_PIN_RIGHT 9 // Set right servo to digital pin 9
 
 // For defining motion of arm mapped to servo rotation values
-#define BASE_POSITION 0
-#define MAX_JAB_POSITION 90
-#define DELAY_TIME 1000
+#define BASE_POSITION 90
+#define MAX_JAB_POSITION 50
+#define DELAY_TIME 2000
 
 Servo armLeft;          // Define left servo
 Servo armRight;         // Define right servo
