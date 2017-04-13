@@ -4,9 +4,11 @@
 #define SERVO_PIN_RIGHT 9 // Set right servo to digital pin 9
 
 // For defining motion of arm mapped to servo rotation values
-#define BASE_POSITION 90
-#define MAX_JAB_POSITION 50
-#define DELAY_TIME 2000
+#define BASE_POSITION 0 //90
+#define MAX_JAB_POSITION 90 //50
+#define DELAY_TIME 200
+
+#define RESET_TO_BASE 0
 
 Servo armLeft;          // Define left servo
 Servo armRight;         // Define right servo
@@ -18,17 +20,23 @@ void setup() {
 
 void loop() {            // Loop through motion tests
 
-//  slowPunch(armLeft);
-//  delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
+  if(RESET_TO_BASE) {
+      moveArm(armLeft, BASE_POSITION);
+      
+  } else {
+//    slowPunch(armLeft);
+//    delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
 //
-//  slowResetArm(armLeft);
-//  delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
+//    slowResetArm(armLeft);
+//    delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
+  
+    quickPunch(armLeft);
+    delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
+    
+    quickResetArm(armLeft);
+    delay(DELAY_TIME*2);      // Wait DELAY_TIME milliseconds (2 seconds)
 
-  quickPunch(armLeft);
-  delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
-
-  quickResetArm(armLeft);
-  delay(DELAY_TIME);      // Wait DELAY_TIME milliseconds (2 seconds)
+  }
   
 }
 
