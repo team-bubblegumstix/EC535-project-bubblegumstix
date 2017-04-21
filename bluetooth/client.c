@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include <error.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
@@ -8,10 +10,10 @@ int main()
 	struct sockaddr_rc addr;
 	int listenfd, status;
 	//XX:XX:XX:XX:XX:XX IS BLUETOOTH ADDRESS
-	char dest[18] = "XX:XX:XX:XX:XX:XX";
+	char dest[18] = "00:80:37:2E:31:20";
 	int cc = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 	if(cc < 0){
-		perror(“Socket failed”);
+		perror("Socket failed");
 		exit(1);
 	}
 	// set the connection parameters (who to connect to)
