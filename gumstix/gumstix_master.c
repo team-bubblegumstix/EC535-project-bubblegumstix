@@ -21,17 +21,15 @@
 // For defining motion of arm mapped to servo rotation values
 #define BASE_POSITION 1           // 0 is MIN Servo Angle
 #define MAX_JAB_POSITION 180       // 180 is MAX Servo Angle
-#define MIN_VALID_Y 50      // will correspond to arm above the stomach
-#define MIN_VALID_Z 50      // will correspond to raised arm, against body
-#define MAX_VALID_Z 550     // will correspond to full punch
-// 300-50   x
-// 550-50  90-1
+#define MIN_VALID_Y 0       // will correspond to arm above the stomach
+#define MIN_VALID_Z 30      // will correspond to raised arm, against body
+#define MAX_VALID_Z 70      // will correspond to full punch
 
-int determine_angle(int hip_data, int y_data, int z_data){
+int determine_angle(int y_data, int z_data){
   int angle, y_dist_from_hip, z_dist_from_hip;
 
-  y_dist_from_hip = y_data - hip_data;
-  z_dist_from_hip = z_data - hip_data;
+  y_dist_from_hip = y_data; // - hip_data;
+  z_dist_from_hip = z_data; // this should be (+) val
   
   // Check if the arm is raised up above hip at least MIN_VALID_Y
   if(y_dist_from_hip > MIN_VALID_Y) {
@@ -43,12 +41,16 @@ int determine_angle(int hip_data, int y_data, int z_data){
       } else {
         // Calculate proportional angle
         angle = (((z_dist_from_hip - MIN_VALID_Z) * (MAX_JAB_POSITION - BASE_POSITION)) / (MAX_VALID_Z - MIN_VALID_Z));
-        return angle;
+        if (angle == 0) {
+          return BASE_POSITION;
+        }
+        else {
+          return angle;
+        }
       }
     } 
   }
   // If we haven't returned, just set to BASE_POSITION
-  printf("y_fh: %d and z_fh: %d are not within range, reset to base\n", y_dist_from_hip, z_dist_from_hip);
   return BASE_POSITION;
 }
 
@@ -62,7 +64,6 @@ int send_to_arduino(int fh, char*buff, int player, int angle) {
   
   len = strlen(buff);
   sent = write(fh, buff, len);
-  printf("len=%d, sent=%d\n", len, sent);
 
   if (sent != len) {
     perror("write");
@@ -104,7 +105,7 @@ int main(int argc, char **argv)
   // bind socket to port 1 of the first available local bluetooth adapter
   loc_addr.rc_family = AF_BLUETOOTH;
   loc_addr.rc_bdaddr = *BDADDR_ANY;
-  loc_addr.rc_channel = (uint8_t) 1;
+  loc_addr.rc_channel = (uint8_t) 2;// originally channel 1
   bind(s, (struct sockaddr *)&loc_addr, sizeof(loc_addr));
 
   // Wait for data from Kinect
@@ -114,32 +115,25 @@ int main(int argc, char **argv)
     // accept one connection (blocking)
     client = accept(s, (struct sockaddr *)&rem_addr, &opt);
     ba2str( &rem_addr.rc_bdaddr, buf );
-    fprintf(stderr, "accepted connection from %s\n", buf);
     memset(buf, 0, sizeof(buf));
     // read data from the client
     bytes_read = read(client, buf, sizeof(buf));
-    fprintf(stderr, "bytes read: %d\n", bytes_read);
     if(bytes_read > 0) {
       printf("received [%s]\n", buf);
       // Parse the data
-      if(bytes_read == 4) {
+      if(bytes_read == 3) {
         player    = (int)buf[0];
-        hip_data  = (int)buf[1];
-        y_data    = (int)buf[2];
-        z_data    = (int)buf[3];
-
+        //hip_data  = (int)buf[1];
+        y_data    = (int)buf[1];
+        z_data    = (int)buf[2];
+        
         // Check that the player was valid
         if (player >= 1 && player <= 4) {
           // Calculate the angle
-          angle = determine_angle(hip_data, y_data, z_data);
+          angle = determine_angle(y_data, z_data); // hip_data
 
-          printf("Sending angle: %d\n", angle);
           // Send the data to the arduino
           sent = send_to_arduino(fh, arduino_buff, player, angle);
-          // if(sent == 0) {
-          //   printf("Error sending the data to arduino. Quit.\n");
-          //   return 1;
-          // }
         } else {
           printf("Player id invalid: %d\n", player);
         }
