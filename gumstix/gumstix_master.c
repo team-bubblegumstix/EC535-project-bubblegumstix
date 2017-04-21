@@ -119,7 +119,6 @@ int main(int argc, char **argv)
     // read data from the client
     bytes_read = read(client, buf, sizeof(buf));
     if(bytes_read > 0) {
-      printf("received [%s]\n", buf);
       // Parse the data
       if(bytes_read == 3) {
         player    = (int)buf[0];
