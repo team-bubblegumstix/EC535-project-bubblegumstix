@@ -42,7 +42,12 @@ int determine_angle(int hip_data, int y_data, int z_data){
       
       } else {
         // Calculate proportional angle
-        angle = ((z_dist_from_hip - MIN_VALID_Z) / (MAX_VALID_Z - MIN_VALID_Z)) * (MAX_JAB_POSITION - BASE_POSITION);
+        printf("a:%d", (z_dist_from_hip - MIN_VALID_Z));
+        printf("b:%d", (MAX_VALID_Z - MIN_VALID_Z));
+        printf("c:%d", (MAX_JAB_POSITION - BASE_POSITION));
+        printf("d:%d", ((z_dist_from_hip - MIN_VALID_Z) / (MAX_VALID_Z - MIN_VALID_Z)));
+        angle = (((z_dist_from_hip - MIN_VALID_Z) / (MAX_VALID_Z - MIN_VALID_Z)) * (MAX_JAB_POSITION - BASE_POSITION));
+        printf("e:%d", angle);
         return angle;
       }
     } 
