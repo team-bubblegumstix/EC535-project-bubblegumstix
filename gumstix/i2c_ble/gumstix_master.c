@@ -62,6 +62,7 @@ int send_to_arduino(int fh, char*buff, int player, int angle) {
   
   len = strlen(buff);
   sent = write(fh, buff, len);
+  printf("len=%d, sent=%d\n", len, sent);
 
   if (sent != len) {
     perror("write");
@@ -135,10 +136,10 @@ int main(int argc, char **argv)
           printf("Sending angle: %d\n", angle);
           // Send the data to the arduino
           sent = send_to_arduino(fh, arduino_buff, player, angle);
-          if(sent == 0) {
-            printf("Error sending the data to arduino. Quit.\n");
-            return 1;
-          }
+          // if(sent == 0) {
+          //   printf("Error sending the data to arduino. Quit.\n");
+          //   return 1;
+          // }
         } else {
           printf("Player id invalid: %d\n", player);
         }
