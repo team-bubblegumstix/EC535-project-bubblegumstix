@@ -1,2 +1,2 @@
 #!/bin/bash
-gcc -o rfcomm-client rfcomm-client.c -lbluetooth
+gcc -o mock_kinect_client mock_kinect_client.c -lbluetooth
