@@ -20,7 +20,7 @@
 
 // For defining motion of arm mapped to servo rotation values
 #define BASE_POSITION 1           // 0 is MIN Servo Angle
-#define MAX_JAB_POSITION 90       // 180 is MAX Servo Angle
+#define MAX_JAB_POSITION 180       // 180 is MAX Servo Angle
 #define MIN_VALID_Y 50      // will correspond to arm above the stomach
 #define MIN_VALID_Z 50      // will correspond to raised arm, against body
 #define MAX_VALID_Z 550     // will correspond to full punch
@@ -120,28 +120,31 @@ int main(int argc, char **argv)
     fprintf(stderr, "bytes read: %d\n", bytes_read);
     if(bytes_read > 0) {
       printf("received [%s]\n", buf);
-      /*
-      // TODO! Parse the data
-      player = buf[0];
-      y_data = buf[1];
-      z_data = buf[2];
+      // Parse the data
+      if(bytes_read == 4) {
+        player    = (int)buf[0];
+        hip_data  = (int)buf[1];
+        y_data    = (int)buf[2];
+        z_data    = (int)buf[3];
 
-      // Check that the player was valid
-      if (player >= 1 && player <= 4) {
-        // Calculate the angle
-        angle = determine_angle(y_data, z_data);
+        // Check that the player was valid
+        if (player >= 1 && player <= 4) {
+          // Calculate the angle
+          angle = determine_angle(hip_data, y_data, z_data);
 
-        printf("Sending angle: %d\n", angle);
-        // Send the data to the arduino
-        sent = send_to_arduino(fh, arduino_buff, player, angle);
-        if(sent == 0) {
-          printf("Error sending the data to arduino. Quit.\n");
-          return 1;
+          printf("Sending angle: %d\n", angle);
+          // Send the data to the arduino
+          sent = send_to_arduino(fh, arduino_buff, player, angle);
+          if(sent == 0) {
+            printf("Error sending the data to arduino. Quit.\n");
+            return 1;
+          }
+        } else {
+          printf("Player id invalid: %d\n", player);
         }
       } else {
-        printf("Player id invalid: %d\n", player);
+        printf("bytes_read != 4 %d\n", bytes_read);
       }
-      */
     }
     // close connection
     close(client);

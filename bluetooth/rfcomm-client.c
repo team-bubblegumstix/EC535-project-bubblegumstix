@@ -4,7 +4,9 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
 
-int bluetooth_client() 
+#define MAX_VALID_Z 550     // will correspond to full punch
+
+int bluetooth_client(int player, int hip_data, int y_data, int z_data) 
 {
     struct sockaddr_rc addr = { 0 };
     int s, status;
@@ -24,7 +26,7 @@ int bluetooth_client()
 
     // send a message
     if( status == 0 ) {
-	status = write(s, "hello!", 6);
+	   status = write(s, "hello!", 6);
     }
     
     if( status < 0 ) perror("uh oh");
@@ -35,12 +37,26 @@ int bluetooth_client()
 
 int main(int argc, char **argv)
 {
+    int hip_data, y_data, z_data, player;
+    player = 1;
+    y_data = 1;
+    z_data = 1;
+    hip_data = 5; // the set value for the hip
+
 	while(1){
-
-		bluetooth_client();
-		sleep(2);
-
-
+        if(player++ >= 5) {
+            player = 1;
+        }
+        z_data = (z_data + 20) % (MAX_VALID_Z + 50);
+        if (z_data == 0) {
+            z_data = 1;
+        }
+        y_data = (y_data + 20) % 200;
+        if (y_data == 0) {
+            y_data = 1;
+        }
+		bluetooth_client(player, hip_data, y_data, z_data);
+		sleep(1);
 	}
 
 	return 0;
