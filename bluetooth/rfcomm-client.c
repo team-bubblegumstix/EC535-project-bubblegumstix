@@ -11,6 +11,7 @@ int bluetooth_client(int player, int hip_data, int y_data, int z_data)
     struct sockaddr_rc addr = { 0 };
     int s, status;
     char dest[18] = "00:80:37:2E:31:20";
+    char msg[5];
 
     // allocate a socket
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
@@ -26,7 +27,8 @@ int bluetooth_client(int player, int hip_data, int y_data, int z_data)
 
     // send a message
     if( status == 0 ) {
-	   status = write(s, "hello!", 6);
+	   sprintf(msg, "%c%c%c%c", player, hip_data, y_data, z_data);
+	   status = write(s, msg, strlen(msg));
     }
     
     if( status < 0 ) perror("uh oh");
