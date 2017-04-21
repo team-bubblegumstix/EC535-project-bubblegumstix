@@ -46,19 +46,24 @@ int main(int argc, char **argv)
     hip_data = 5; // the set value for the hip
 
 	while(1){
-        if(++player >= 5) {
-            player = 1;
-        }
-        z_data = (z_data + 20) % (MAX_VALID_Z + 50);
-        if (z_data == 0) {
-            z_data = 1;
-        }
-        y_data = (y_data + 20) % 200;
-        if (y_data < 50) {
-            y_data = 50;
-        }
+
+		if(++player >= 5) {
+		    player = 1;
+		}
+
+		z_data = (z_data + 20) % (MAX_VALID_Z + 50);
+		if (z_data == 0) {
+		    z_data = 1;
+		}
+
+		y_data = (y_data + 20) % 200;
+		if (y_data < 50) {
+		    y_data = 50;
+		}
+
 		bluetooth_client(player, hip_data, y_data, z_data);
-		sleep(1);
+		//sleep(1);
+		usleep(125000);
 	}
 
 	return 0;
