@@ -73,10 +73,10 @@ int send_to_arduino(int fh, char*buff, int player, int angle) {
 
 int main(int argc, char **argv)
 {
-	int fh;               // to hold the i2c file descriptor
-  int player, angle;    // after parsing the Kinect data
+  int fh;               // to hold the i2c file descriptor
+  int player, angle, hip_data, y_data, z_data, sent;    // after parsing the Kinect data
   char kinect_msg[10];  // receiving the kinect data
-	char arduino_buff[ARDUINO_I2C_BUFFER_LIMIT + 4]; // For sending the data to the arduino
+  char arduino_buff[ARDUINO_I2C_BUFFER_LIMIT + 4]; // For sending the data to the arduino
 
   // For bluetooth socket
   struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
