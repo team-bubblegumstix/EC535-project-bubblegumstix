@@ -23,29 +23,30 @@ int main(int argc, char **argv)
 
     // put socket into listening mode
 
-    while(1){
-        listen(s, 1);
+    listen(s, 1);
 
-        // accept one connection
-        client = accept(s, (struct sockaddr *)&rem_addr, &opt);
+    // accept one connection
+    client = accept(s, (struct sockaddr *)&rem_addr, &opt);
 
-        ba2str( &rem_addr.rc_bdaddr, buf );
-        fprintf(stderr, "accepted connection from %s\n", buf);
-        memset(buf, 0, sizeof(buf));
+    ba2str( &rem_addr.rc_bdaddr, buf );
+    fprintf(stderr, "accepted connection from %s\n", buf);
+    memset(buf, 0, sizeof(buf));
 
-        // read data from the client
+    // read data from the client
+
+    while(1){ 
         bytes_read = read(client, buf, sizeof(buf));
         fprintf(stderr, "%d\n", bytes_read);
         if( bytes_read > 0 ) {
             printf("received [%s]\n", buf);
         }
         memset(buf, 0, sizeof(buf));
-        
-
-
-        // close connection
-        close(client);
     }
+    
+
+
+    // close connection
+    close(client);
     close(s);
     return 0;
 }
