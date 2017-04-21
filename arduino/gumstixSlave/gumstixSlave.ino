@@ -9,7 +9,6 @@
 #include <Wire.h>
 
 #define I2C_SLAVE_ADDRESS 0x10  // Set Arduino's address on I2C bus
-#define DES_BAUD_RATE 9600      // Set baud rate for serial port monitor
 
 #define SERVO_BLUE_PIN_LEFT 10  // Set Blue left servo to digital pin 10
 #define SERVO_BLUE_PIN_RIGHT 9  // Set Blue right servo to digital pin 9
@@ -52,7 +51,6 @@ Servo getArmById(int armId) {
      case 4:
       return RedArmRight;
      default:
-      Serial.println("INVALID ARM ID");
       return BlueArmLeft;
   }
 }
@@ -62,20 +60,15 @@ Servo getArmById(int armId) {
  */
 void onRecieveHandler(int numBytes)
 {
-    Serial.println("received:");
     if(Wire.available() == 2) {
       int arm = Wire.read();       // receive byte as an integer  (arm number to move)
       int angle = Wire.read();     // receive byte as an integer  (Arm position)
-      Serial.println(arm);
-      Serial.println(angle);
       moveArm(getArmById(arm), angle);
 
     
     } else {
-      Serial.println("Wire != 2");
-      Serial.println(Wire.available());
       for (int i = 0; i < numBytes; i++) {
-        Serial.println(Wire.read());
+        Wire.read();
       }
     }
     
@@ -101,9 +94,6 @@ void setup()
     RedArmRight.attach(SERVO_RED_PIN_RIGHT);
     
     // Prepare the I2C communication
-    Serial.begin(DES_BAUD_RATE);
-    // while (!Serial); // Wait until Serial Monitor is open
-    Serial.println("\nI2C Gumstix Slave");
     begin_i2c();  
 }
 
