@@ -11,7 +11,7 @@ int bluetooth_client(int player, int hip_data, int y_data, int z_data)
     struct sockaddr_rc addr = { 0 };
     int s, status;
     char dest[18] = "00:80:37:2E:31:20";
-    char msg[5];
+    char msg[36];
 
     // allocate a socket
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     hip_data = 5; // the set value for the hip
 
 	while(1){
-        if(player++ >= 5) {
+        if(++player >= 5) {
             player = 1;
         }
         z_data = (z_data + 20) % (MAX_VALID_Z + 50);
@@ -54,8 +54,8 @@ int main(int argc, char **argv)
             z_data = 1;
         }
         y_data = (y_data + 20) % 200;
-        if (y_data == 0) {
-            y_data = 1;
+        if (y_data < 50) {
+            y_data = 50;
         }
 		bluetooth_client(player, hip_data, y_data, z_data);
 		sleep(1);
