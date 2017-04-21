@@ -32,10 +32,14 @@ int main(int argc, char **argv)
     memset(buf, 0, sizeof(buf));
 
     // read data from the client
-    bytes_read = read(client, buf, sizeof(buf));
-    if( bytes_read > 0 ) {
-        printf("received [%s]\n", buf);
+    while(1){
+        bytes_read = read(client, buf, sizeof(buf));
+        printf("%d\n", bytes_read);
+        if( bytes_read > 0 ) {
+            printf("received [%s]\n", buf);
+        }
     }
+
 
     // close connection
     close(client);
