@@ -42,7 +42,7 @@ int determine_angle(int hip_data, int y_data, int z_data){
       
       } else {
         // Calculate proportional angle
-        angle = ((z_dist_from_hip - MIN_VALID_Z) / (MAX_VALID_Z - MIN_VALID_Z)) * (MAX_JAB_POSITION - BASE_POSITION)
+        angle = ((z_dist_from_hip - MIN_VALID_Z) / (MAX_VALID_Z - MIN_VALID_Z)) * (MAX_JAB_POSITION - BASE_POSITION);
         return angle;
       }
     } 
@@ -52,7 +52,7 @@ int determine_angle(int hip_data, int y_data, int z_data){
   return BASE_POSITION;
 }
 
-int send_to_arduino(char*buff, int player, int angle) {
+int send_to_arduino(int fh, char*buff, int player, int angle) {
   int len, sent;
   char msg[2];
   // Put the data in the Gumstix-Arduino predetermined format
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 
         printf("Sending angle: %d\n", angle);
         // Send the data to the arduino
-        sent = send_to_arduino(arduino_buff, player, angle);
+        sent = send_to_arduino(fh, arduino_buff, player, angle);
         if(sent == 0) {
           printf("Error sending the data to arduino. Quit.\n");
           return 1;
