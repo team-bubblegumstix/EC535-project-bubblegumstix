@@ -15,57 +15,30 @@
 #define SERVO_RED_PIN_LEFT 8    // Set Red left servo to digital pin 8
 #define SERVO_RED_PIN_RIGHT 7   // Set Red right servo to digital pin 7
 
-// For defining motion of arm mapped to servo rotation values
-#define BASE_POSITION 0           // 0 is MIN Servo Angle
-#define MAX_JAB_POSITION 90       // 180 is MAX Servo Angle
-
 Servo BlueArmLeft;          // Define left servo for Blue player
 Servo BlueArmRight;         // Define right servo for Blue player
 Servo RedArmLeft;           // Define left servo for Red player
 Servo RedArmRight;          // Define right servo for Red player
 
 
-// move forward to desired angle
-void moveArm(Servo jabArm, int angle) {
-  jabArm.write(angle);
-}
-
-// move forward to max position
-void quickPunch(Servo jabArm) {
-  moveArm(jabArm, MAX_JAB_POSITION);
-}
-
-// reset arm to base
-void quickResetArm(Servo jabArm) {
-  moveArm(jabArm, BASE_POSITION);
-}
-
-Servo getArmById(int armId) {
-  switch(armId){
-    case 1:
-      return BlueArmLeft;
-     case 2:
-      return BlueArmRight;
-     case 3:
-      return RedArmLeft;
-     case 4:
-      return RedArmRight;
-     default:
-      return BlueArmLeft;
-  }
-}
-
 /*
  * Create callback function when I2C data sent from Gumstix
  */
 void onRecieveHandler(int numBytes)
 {
-    if(Wire.available() == 2) {
-      int arm = Wire.read();       // receive byte as an integer  (arm number to move)
-      int angle = Wire.read();     // receive byte as an integer  (Arm position)
-      moveArm(getArmById(arm), angle);
+    if(Wire.available() == 3) {
+      int player_id = Wire.read();      // receive byte as an integer  (arm number to move)
+      int leftAngle = Wire.read();      // receive byte as an integer  (left arm position)
+      int rightAngle = Wire.read();     // receive byte as an integer  (right arm position)
+      
+      if (player_id == 1) {
+        BlueArmLeft.write(leftAngle);
+        BlueArmRight.write(rightAngle);
+      } else {
+        RedArmLeft.write(leftAngle);
+        RedArmRight.write(rightAngle);
+      }
 
-    
     } else {
       for (int i = 0; i < numBytes; i++) {
         Wire.read();
