@@ -127,6 +127,9 @@ int main(int argc, char **argv)
         z_data_r    = (int)buf[4]; // rightWrist_Z
 
         printf("KINECT ID: %d\n", k_player_id);
+        printf("NUM PLYRS: %d\n", num_players_tracked);
+        printf("MAP PLYR1: %d\n", player_id_map[0]);
+        printf("MAP PLYR2: %d\n", player_id_map[1]);
         // Update player ID map
         if (num_players_tracked == 0) {
           // We are adding a new player 1
