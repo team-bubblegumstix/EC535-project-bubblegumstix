@@ -126,6 +126,7 @@ int main(int argc, char **argv)
         y_data_r    = (int)buf[3]; // rightWrist_Y
         z_data_r    = (int)buf[4]; // rightWrist_Z
 
+        printf("KINECT ID: %d\n", k_player_id);
         // Update player ID map
         if (num_players_tracked == 0) {
           // We are adding a new player 1
@@ -210,6 +211,7 @@ int main(int argc, char **argv)
         last_k_id = k_player_id;
 
         if(player >= 1 && player <= 4) {
+          printf("PLAYER ID: %d\n", player);
           // No players skipped this round (we were able to recognize/handle ids)
           skipped_player_count = 0;
           
