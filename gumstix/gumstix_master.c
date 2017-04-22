@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 {
   int fh;               // to hold the i2c file descriptor
   int y_data_l, z_data_l, y_data_r, z_data_r, leftAngle, rightAngle;
-  int k_player_id, last_k_id, player, skipped_player, sent;    // after parsing the Kinect data
+  int k_player_id, last_k_id, player, skipped_player_count, sent;    // after parsing the Kinect data
   char arduino_buff[ARDUINO_I2C_BUFFER_LIMIT + 4]; // For sending the data to the arduino
   int num_players_tracked = 0;      // For tracking the state of known skeletons
   int player_id_map[2] = {-1, -1};  // For tracking the kinect IDs of the two players
