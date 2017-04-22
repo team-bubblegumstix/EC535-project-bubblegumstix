@@ -26,21 +26,18 @@
 #define MAX_VALID_Z 70      // will correspond to full punch
 
 int determine_angle(int y_data, int z_data){
-  int angle, y_dist_from_hip, z_dist_from_hip;
-
-  y_dist_from_hip = y_data; // - hip_data;
-  z_dist_from_hip = z_data; // this should be (+) val
+  int angle;
   
   // Check if the arm is raised up above hip at least MIN_VALID_Y
-  if(y_dist_from_hip > MIN_VALID_Y) {
-    if (z_dist_from_hip > MIN_VALID_Z) {
+  if(y_data > MIN_VALID_Y) {
+    if (z_data > MIN_VALID_Z) {
       // TODO! Calculate the appropriate angle for servo based on data
-      if (z_dist_from_hip >= MAX_VALID_Z) {
+      if (z_data >= MAX_VALID_Z) {
         return MAX_JAB_POSITION;
       
       } else {
         // Calculate proportional angle
-        angle = (((z_dist_from_hip - MIN_VALID_Z) * (MAX_JAB_POSITION - BASE_POSITION)) / (MAX_VALID_Z - MIN_VALID_Z));
+        angle = (((z_data - MIN_VALID_Z) * (MAX_JAB_POSITION - BASE_POSITION)) / (MAX_VALID_Z - MIN_VALID_Z));
         if (angle == 0) {
           return BASE_POSITION;
         }
@@ -54,11 +51,11 @@ int determine_angle(int y_data, int z_data){
   return BASE_POSITION;
 }
 
-int send_to_arduino(int fh, char*buff, int player, int angle) {
+int send_to_arduino(int fh, char*buff, int player, int leftAngle, int rightAngle) {
   int len, sent;
-  char msg[2];
+  char msg[3];
   // Put the data in the Gumstix-Arduino predetermined format
-  sprintf(msg, "%c%c", player, angle); // cast ints to chars
+  sprintf(msg, "%c%c%c", player, leftAngle, rightAngle); // cast ints to chars
   // Copy that msg to the buffer
   strcpy(buff, msg); 
   
@@ -76,9 +73,11 @@ int send_to_arduino(int fh, char*buff, int player, int angle) {
 int main(int argc, char **argv)
 {
   int fh;               // to hold the i2c file descriptor
-  int player, angle, hip_data, y_data, z_data, sent;    // after parsing the Kinect data
-  char kinect_msg[10];  // receiving the kinect data
+  int y_data_l, z_data_l, y_data_r, z_data_r, leftAngle, rightAngle;
+  int k_player_id, last_k_id, player, skipped_player_count, sent;    // after parsing the Kinect data
   char arduino_buff[ARDUINO_I2C_BUFFER_LIMIT + 4]; // For sending the data to the arduino
+  int num_players_tracked = 0;      // For tracking the state of known skeletons
+  int player_id_map[2] = {-1, -1};  // For tracking the kinect IDs of the two players
 
   // For bluetooth socket
   struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
@@ -120,24 +119,130 @@ int main(int argc, char **argv)
     bytes_read = read(client, buf, sizeof(buf));
     if(bytes_read > 0) {
       // Parse the data
-      if(bytes_read == 3) {
-        player    = (int)buf[0];
-        //hip_data  = (int)buf[1];
-        y_data    = (int)buf[1];
-        z_data    = (int)buf[2];
-        
-        // Check that the player was valid
-        if (player >= 1 && player <= 4) {
-          // Calculate the angle
-          angle = determine_angle(y_data, z_data); // hip_data
+      if(bytes_read == 5) {
+        k_player_id = (int)buf[0]; // skel.TrackingId from kinect
+        y_data_l    = (int)buf[1]; // leftWrist_Y
+        z_data_l    = (int)buf[2]; // leftWrist_Z
+        y_data_r    = (int)buf[3]; // rightWrist_Y
+        z_data_r    = (int)buf[4]; // rightWrist_Z
+
+        printf("KINECT ID: %d\n", k_player_id);
+        printf("NUM PLYRS: %d\n", num_players_tracked);
+        printf("MAP PLYR1: %d\n", player_id_map[0]);
+        printf("MAP PLYR2: %d\n", player_id_map[1]);
+        // Update player ID map
+        if (num_players_tracked == 0) {
+          // We are adding a new player 1
+          player = 1;
+          player_id_map[0] = k_player_id;
+          num_players_tracked++;
+
+        } else if (num_players_tracked == 1) {
+          // We are only aware of 1 skeleton at the moment
+          if(last_k_id == k_player_id) {
+            // The data is an existing id
+            if(player_id_map[0] == k_player_id) {
+              // Data for solely-tracked player 1
+              player = 1;
+
+            } else {
+              // Data for solely-tracked player 2
+              player = 2;
+
+            }
+          } else {
+            // This is a new id (and only tracking 1 player, so this is a new player)
+            if (player_id_map[1] == -1) {
+              // Add a new player 2
+              player = 2;
+              player_id_map[1] = k_player_id;
+            
+            } else if (player_id_map[0] == -1) {
+              // Add a new player 1
+              player = 1;
+              player_id_map[0] = k_player_id;
+
+            } 
+            num_players_tracked++;
+
+          }
+        } else if (num_players_tracked == 2) {
+          // We are aware of 2 skeletons
+          if(last_k_id == k_player_id) {
+            // Saw the same id 2x in a row, we must have lost a player
+            if(player_id_map[0] == k_player_id) {
+              // Data for now solely-tracked player 1
+              player = 1;
+              // Remove player 2 id
+              player_id_map[1] = -1;
+
+            } else {
+              // Data for now solely-tracked player 2
+              player = 2;
+              // Remove player 1 id
+              player_id_map[0] = -1;
+
+            }
+            num_players_tracked--;
+          } else {
+            // This is a different id than we saw last time
+            if(player_id_map[0] == last_k_id) {
+              if(player_id_map[1] == k_player_id) {
+                // We saw the known player 1 last time, and this is the known player 2
+                player = 2;
+
+              } else {
+                // We saw the known player 1 last time, but this is not player 2's id
+                player = -1;
+                k_player_id = 1;  // This way, we just ignore this 3rd player
+
+              }
+            } else if(player_id_map[1] == last_k_id) {
+              if(player_id_map[0] == k_player_id) {
+                // We saw the known player 2 last time, and this is the known player 1
+                player = 1;
+
+              } else {
+                // We saw the known player 2 last time, but this is not player 1's id
+                player = -1;      // This way, we just ignore this 3rd players data
+                k_player_id = 2;  // This way, we may move back to the 
+
+              }
+            }
+          }
+        }
+        last_k_id = k_player_id;
+
+        if(player >= 1 && player <= 4) {
+          printf("PLAYER ID: %d\n", player);
+          // No players skipped this round (we were able to recognize/handle ids)
+          skipped_player_count = 0;
+          
+          // Calculate the angles
+          leftAngle = determine_angle(y_data_l, z_data_l);
+          rightAngle = determine_angle(y_data_r, z_data_r);
 
           // Send the data to the arduino
-          sent = send_to_arduino(fh, arduino_buff, player, angle);
+          sent = send_to_arduino(fh, arduino_buff, player, leftAngle, rightAngle);
+          
         } else {
-          printf("Player id invalid: %d\n", player);
+          if(++skipped_player_count > 4) {
+            // Both players left the screen at the same time and returned at the same time (w new ids)
+            skipped_player_count = 0;
+
+            // Reset map and num_players_tracked
+            player_id_map[0] = -1;
+            player_id_map[1] = -1;
+            num_players_tracked = 0;
+
+            printf("reset both ids\n");
+          } else {
+            printf("skipped 3rd player\n");
+            
+          }
         }
       } else {
-        printf("bytes_read != 4 %d\n", bytes_read);
+        printf("bytes_read != 5 %d\n", bytes_read);
       }
     }
     // close connection

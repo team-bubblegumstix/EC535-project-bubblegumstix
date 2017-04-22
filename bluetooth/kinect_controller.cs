@@ -43,45 +43,31 @@ namespace Simple_Kinect
                         int rightWrist_Y = (Convert.ToInt32(rightWrist.Y * 100)) < 0 ? 0 : Convert.ToInt32(rightWrist.Y * 100);
                         
 
-                        Console.WriteLine("{0} | {1} | {2} | {3} | {4}", leftWrist_Z, leftWrist_Y, rightWrist_Z, rightWrist_Y, hipCenter_Z);
+                        Console.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", skel.TrackingId, leftWrist_Z, leftWrist_Y, rightWrist_Z, rightWrist_Y, hipCenter_Z);
 
                         try
                         {
-                            for (int i = 1; i < 3; i++)
-                            {
-                                Console.WriteLine("Trying to connect...");
-                                BluetoothAddress addr = BluetoothAddress.Parse("00:80:37:2e:31:20");
-                                Guid serviceClass;
-                                serviceClass = BluetoothService.BluetoothBase;
-                                var ep = new BluetoothEndPoint(addr, serviceClass, 2);
-                                var cli = new BluetoothClient();
 
-                                cli.Connect(ep);
-                                Console.WriteLine("just connected");
+                            Console.WriteLine("Trying to connect...");
+                            BluetoothAddress addr = BluetoothAddress.Parse("00:80:37:2e:31:20");
+                            Guid serviceClass;
+                            serviceClass = BluetoothService.BluetoothBase;
+                            var ep = new BluetoothEndPoint(addr, serviceClass, 2);
+                            var cli = new BluetoothClient();
 
-                                Stream peerStream = cli.GetStream();
-                                if (i == 1)
-                                {
-                                    
-                                    // Player 1s left wrist
-                                    string msg = String.Format("{0}{1}{2}", Convert.ToChar(1), Convert.ToChar(leftWrist_Y), Convert.ToChar(leftWrist_Z));
-                                    Console.WriteLine("Sending msg");
-                                    //string msg = String.Format("{0}{1}{2}{3}", Convert.ToChar(1), Convert.ToChar(100), Convert.ToChar(50), Convert.ToChar(50));
-                                    Byte[] to_send = System.Text.Encoding.ASCII.GetBytes(msg);
-                                    peerStream.Write(to_send, 0, to_send.Length);
-                                    peerStream.Close();
-                                }
-                                else
-                                {
-                                    // Player 1s right wrist
-                                    string msg = String.Format("{0}{1}{2}", Convert.ToChar(2), Convert.ToChar(rightWrist_Y), Convert.ToChar(rightWrist_Z));
-                                    //string msg = String.Format("{0}{1}{2}{3}", Convert.ToChar(1), Convert.ToChar(100), Convert.ToChar(50), Convert.ToChar(100));
-                                    Byte[] to_send = System.Text.Encoding.ASCII.GetBytes(msg);
-                                    peerStream.Write(to_send, 0, to_send.Length);
-                                    peerStream.Close();
-                                }
+                            cli.Connect(ep);
+                            Console.WriteLine("just connected");
 
-                            }
+                            Stream peerStream = cli.GetStream();
+
+                            // Send this players left and right arm data
+                            string msg = String.Format("{0}{1}{2}{3}{4}", Convert.ToChar(skel.TrackingId), Convert.ToChar(leftWrist_Y), Convert.ToChar(leftWrist_Z), Convert.ToChar(rightWrist_Y), Convert.ToChar(rightWrist_Z));
+                            Console.WriteLine("Sending msg");
+                            //string msg = String.Format("{0}{1}{2}{3}", Convert.ToChar(1), Convert.ToChar(100), Convert.ToChar(50), Convert.ToChar(50));
+                            Byte[] to_send = System.Text.Encoding.ASCII.GetBytes(msg);
+                            peerStream.Write(to_send, 0, to_send.Length);
+                            peerStream.Close();
+
                         }
                         catch (Exception)
                         {
