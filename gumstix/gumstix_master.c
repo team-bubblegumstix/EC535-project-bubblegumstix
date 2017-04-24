@@ -20,10 +20,10 @@
 
 // For defining motion of arm mapped to servo rotation values
 // RIGHT ARMS GO POSITIVE ANGLES, LEFT ARMS NEGATIVE (relative to 90 degrees)
-#define BASE_POSITION 0    // 90 is starting Servo Angle
+#define BASE_POSITION 90    // 90 is starting Servo Angle
 #define MAX_JAB_R_POS 120   // 120 is MAX Servo Angle in clockwise direction (30 degrees)
 #define MAX_JAB_L_POS 60    // 60 is MAX Servo Angle in counter-clockwise direction (30 degrees)
-
+#define MAX_DELTA_SERVO 30
 // Define base values for the kinect readings
 #define MIN_VALID_Y 0       // will correspond to arm above the stomach
 #define MIN_VALID_Z 30      // will correspond to raised arm, against body
@@ -34,7 +34,7 @@
 
 
 int determine_angle(char arm, int y_data, int z_data){
-  int angle;
+  int angle_of_change, servo_angle;
   
   // Check if the arm is raised up above hip at least MIN_VALID_Y
   if(y_data > MIN_VALID_Y) {
@@ -48,16 +48,20 @@ int determine_angle(char arm, int y_data, int z_data){
         }
       } else {
         // Calculate proportional angle
+        angle_of_change = (((z_data - MIN_VALID_Z) * MAX_DELTA_SERVO) / (MAX_VALID_Z - MIN_VALID_Z));
         if(arm == 'l') {
-          angle = (((z_data - MIN_VALID_Z) * (MAX_JAB_L_POS - BASE_POSITION)) / (MAX_VALID_Z - MIN_VALID_Z));
+          servo_angle = BASE_POSITION - angle_of_change;
         } else {
-          angle = (((z_data - MIN_VALID_Z) * (MAX_JAB_R_POS - BASE_POSITION)) / (MAX_VALID_Z - MIN_VALID_Z));
+          servo_angle = BASE_POSITION + angle_of_change;
         }
-        if (angle == 0) {
-          return BASE_POSITION;
-        }
-        else {
-          return angle;
+        if (servo_angle > 120) {
+          return MAX_JAB_R_POS;
+
+        } else if (servo_angle < 60) {
+          return MAX_JAB_L_POS;
+          
+        } else {
+          return servo_angle;
         }
       }
     } 
