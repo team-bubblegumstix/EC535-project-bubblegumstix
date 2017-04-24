@@ -21,13 +21,17 @@
 // For defining motion of arm mapped to servo rotation values
 // RIGHT ARMS GO POSITIVE ANGLES, LEFT ARMS NEGATIVE (relative to 90 degrees)
 #define BASE_POSITION 90    // 90 is starting Servo Angle
-#define MAX_JAB_L_POS 120   // 120 is MAX Servo Angle in clockwise direction (30 degrees)
-#define MAX_JAB_R_POS 60    // 60 is MAX Servo Angle in counter-clockwise direction (30 degrees)
+#define MAX_JAB_R_POS 120   // 120 is MAX Servo Angle in clockwise direction (30 degrees)
+#define MAX_JAB_L_POS 60    // 60 is MAX Servo Angle in counter-clockwise direction (30 degrees)
 
 // Define base values for the kinect readings
 #define MIN_VALID_Y 0       // will correspond to arm above the stomach
 #define MIN_VALID_Z 30      // will correspond to raised arm, against body
 #define MAX_VALID_Z 70      // will correspond to full punch
+
+// 60-30    x
+// 70-30  120-90
+
 
 int determine_angle(char arm, int y_data, int z_data){
   int angle;
@@ -47,7 +51,7 @@ int determine_angle(char arm, int y_data, int z_data){
         if(arm == 'l') {
           angle = (((z_data - MIN_VALID_Z) * (MAX_JAB_L_POS - BASE_POSITION)) / (MAX_VALID_Z - MIN_VALID_Z));
         } else {
-          angle = (((z_data - MIN_VALID_Z) * (BASE_POSITION - MAX_JAB_R_POS)) / (MAX_VALID_Z - MIN_VALID_Z));
+          angle = (((z_data - MIN_VALID_Z) * (MAX_JAB_R_POS - BASE_POSITION)) / (MAX_VALID_Z - MIN_VALID_Z));
         }
         if (angle == 0) {
           return BASE_POSITION;
@@ -232,6 +236,7 @@ int main(int argc, char **argv)
           // Calculate the angles
           leftAngle = determine_angle('l', y_data_l, z_data_l);
           rightAngle = determine_angle('r', y_data_r, z_data_r);
+          printf("L: %d, R: %d\n", leftAngle, rightAngle);
 
           // Send the data to the arduino
           sent = send_to_arduino(fh, arduino_buff, player, leftAngle, rightAngle);
