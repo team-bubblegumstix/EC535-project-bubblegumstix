@@ -24,14 +24,11 @@
 #define MAX_JAB_R_POS 120   // 120 is MAX Servo Angle in clockwise direction (30 degrees)
 #define MAX_JAB_L_POS 60    // 60 is MAX Servo Angle in counter-clockwise direction (30 degrees)
 #define MAX_DELTA_SERVO 30
+
 // Define base values for the kinect readings
 #define MIN_VALID_Y 0       // will correspond to arm above the stomach
 #define MIN_VALID_Z 30      // will correspond to raised arm, against body
 #define MAX_VALID_Z 70      // will correspond to full punch
-
-// 60-30    x
-// 70-30  120-90
-
 
 int determine_angle(char arm, int y_data, int z_data){
   int angle_of_change, servo_angle;
@@ -59,7 +56,7 @@ int determine_angle(char arm, int y_data, int z_data){
 
         } else if (servo_angle < 60) {
           return MAX_JAB_L_POS;
-          
+
         } else {
           return servo_angle;
         }
@@ -145,10 +142,6 @@ int main(int argc, char **argv)
         y_data_r    = (int)buf[3]; // rightWrist_Y
         z_data_r    = (int)buf[4]; // rightWrist_Z
 
-        printf("KINECT ID: %d\n", k_player_id);
-        printf("NUM PLYRS: %d\n", num_players_tracked);
-        printf("MAP PLYR1: %d\n", player_id_map[0]);
-        printf("MAP PLYR2: %d\n", player_id_map[1]);
         // Update player ID map
         if (num_players_tracked == 0) {
           // We are adding a new player 1
@@ -233,14 +226,12 @@ int main(int argc, char **argv)
         last_k_id = k_player_id;
 
         if(player >= 1 && player <= 4) {
-          printf("PLAYER ID: %d\n", player);
           // No players skipped this round (we were able to recognize/handle ids)
           skipped_player_count = 0;
           
           // Calculate the angles
           leftAngle = determine_angle('l', y_data_l, z_data_l);
           rightAngle = determine_angle('r', y_data_r, z_data_r);
-          printf("L: %d, R: %d\n", leftAngle, rightAngle);
 
           // Send the data to the arduino
           sent = send_to_arduino(fh, arduino_buff, player, leftAngle, rightAngle);
