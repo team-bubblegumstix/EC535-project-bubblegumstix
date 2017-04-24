@@ -21,6 +21,8 @@ Servo RedArmLeft;           // Define left servo for Red player
 Servo RedArmRight;          // Define right servo for Red player
 
 
+// RIGHT ARMS GO POSITIVE ANGLES, LEFT ARMS NEGATIVE (relative to 90 degrees)
+
 /*
  * Create callback function when I2C data sent from Gumstix
  */
@@ -71,11 +73,12 @@ void setup()
     BlueArmRight.write(90);
     RedArmLeft.write(90);
     RedArmRight.write(90);
-    
+
     // Prepare the I2C communication
     begin_i2c();  
 }
 
 void loop()
 {
+
 }
