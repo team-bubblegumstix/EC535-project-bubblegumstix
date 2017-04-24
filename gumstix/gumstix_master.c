@@ -19,30 +19,46 @@
 #define ARDUINO_I2C_BUFFER_LIMIT 32
 
 // For defining motion of arm mapped to servo rotation values
-#define BASE_POSITION 1           // 0 is MIN Servo Angle
-#define MAX_JAB_POSITION 180       // 180 is MAX Servo Angle
+// RIGHT ARMS GO POSITIVE ANGLES, LEFT ARMS NEGATIVE (relative to 90 degrees)
+#define BASE_POSITION 90    // 90 is starting Servo Angle
+#define MAX_JAB_R_POS 120   // 120 is MAX Servo Angle in clockwise direction (30 degrees)
+#define MAX_JAB_L_POS 60    // 60 is MAX Servo Angle in counter-clockwise direction (30 degrees)
+#define MAX_DELTA_SERVO 30
+
+// Define base values for the kinect readings
 #define MIN_VALID_Y 0       // will correspond to arm above the stomach
 #define MIN_VALID_Z 30      // will correspond to raised arm, against body
 #define MAX_VALID_Z 70      // will correspond to full punch
 
-int determine_angle(int y_data, int z_data){
-  int angle;
+int determine_angle(char arm, int y_data, int z_data){
+  int angle_of_change, servo_angle;
   
   // Check if the arm is raised up above hip at least MIN_VALID_Y
   if(y_data > MIN_VALID_Y) {
     if (z_data > MIN_VALID_Z) {
       // TODO! Calculate the appropriate angle for servo based on data
       if (z_data >= MAX_VALID_Z) {
-        return MAX_JAB_POSITION;
-      
+        if(arm == 'l') {
+          return MAX_JAB_L_POS;
+        } else {
+          return MAX_JAB_R_POS;
+        }
       } else {
         // Calculate proportional angle
-        angle = (((z_data - MIN_VALID_Z) * (MAX_JAB_POSITION - BASE_POSITION)) / (MAX_VALID_Z - MIN_VALID_Z));
-        if (angle == 0) {
-          return BASE_POSITION;
+        angle_of_change = (((z_data - MIN_VALID_Z) * MAX_DELTA_SERVO) / (MAX_VALID_Z - MIN_VALID_Z));
+        if(arm == 'l') {
+          servo_angle = BASE_POSITION - angle_of_change;
+        } else {
+          servo_angle = BASE_POSITION + angle_of_change;
         }
-        else {
-          return angle;
+        if (servo_angle > 120) {
+          return MAX_JAB_R_POS;
+
+        } else if (servo_angle < 60) {
+          return MAX_JAB_L_POS;
+
+        } else {
+          return servo_angle;
         }
       }
     } 
@@ -126,10 +142,6 @@ int main(int argc, char **argv)
         y_data_r    = (int)buf[3]; // rightWrist_Y
         z_data_r    = (int)buf[4]; // rightWrist_Z
 
-        printf("KINECT ID: %d\n", k_player_id);
-        printf("NUM PLYRS: %d\n", num_players_tracked);
-        printf("MAP PLYR1: %d\n", player_id_map[0]);
-        printf("MAP PLYR2: %d\n", player_id_map[1]);
         // Update player ID map
         if (num_players_tracked == 0) {
           // We are adding a new player 1
@@ -214,13 +226,12 @@ int main(int argc, char **argv)
         last_k_id = k_player_id;
 
         if(player >= 1 && player <= 4) {
-          printf("PLAYER ID: %d\n", player);
           // No players skipped this round (we were able to recognize/handle ids)
           skipped_player_count = 0;
           
           // Calculate the angles
-          leftAngle = determine_angle(y_data_l, z_data_l);
-          rightAngle = determine_angle(y_data_r, z_data_r);
+          leftAngle = determine_angle('l', y_data_l, z_data_l);
+          rightAngle = determine_angle('r', y_data_r, z_data_r);
 
           // Send the data to the arduino
           sent = send_to_arduino(fh, arduino_buff, player, leftAngle, rightAngle);
