@@ -65,6 +65,12 @@ void setup()
     BlueArmRight.attach(SERVO_BLUE_PIN_RIGHT);
     RedArmLeft.attach(SERVO_RED_PIN_LEFT);
     RedArmRight.attach(SERVO_RED_PIN_RIGHT);
+
+    // The servos need to start at 90
+    BlueArmLeft.write(90);
+    BlueArmRight.write(90);
+    RedArmLeft.write(90);
+    RedArmRight.write(90);
     
     // Prepare the I2C communication
     begin_i2c();  
