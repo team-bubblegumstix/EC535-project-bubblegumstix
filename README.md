@@ -3,14 +3,28 @@ Final Project for EC535 Spring 2017 - Embedded Rock 'EM Sock 'EM
 
 ## Software/Hardware Versions
 ### Kinect
-[TODO]
+Component           |    Version
+------------------- | -------------
+Xbox Kinect         |   v1 (USB 2.0)
+OS                  |   Windows 7
+IDE                 |   Microsoft Visual Studios 2015
+Language            |   C#
+SDK                 |   [Kinect for Windows v1.8](https://www.microsoft.com/en-us/download/details.aspx?id=40278)
+Bluetooth Adapter   |   Targus 4.0
+
 ### Gumstix
-
-
+* _Bluetooth Driver_
+  * :warning: [TODO] 
+* _Control Logic_ 
+  * :warning: [TODO] 
+* _I2C Driver_
+  * :warning: [TODO] 
+  
 ### Arduino
-
-
-
+Library      |    Link
+------------ | -------------
+Servo.h      |   [arduino-libraries/Servo](https://github.com/arduino-libraries/Servo)
+Wire.h       |   [arduino/Arduino](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)
 
 ## Gumstix Board - I2C Pin Layout
 
