@@ -20,7 +20,7 @@
 
 // For defining motion of arm mapped to servo rotation values
 // RIGHT ARMS GO POSITIVE ANGLES, LEFT ARMS NEGATIVE (relative to 90 degrees)
-#define BASE_POSITION 90    // 90 is starting Servo Angle
+#define BASE_POSITION 0    // 90 is starting Servo Angle
 #define MAX_JAB_R_POS 120   // 120 is MAX Servo Angle in clockwise direction (30 degrees)
 #define MAX_JAB_L_POS 60    // 60 is MAX Servo Angle in counter-clockwise direction (30 degrees)
 
