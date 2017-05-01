@@ -2,7 +2,7 @@
 Final Project for EC535 Spring 2017 - Embedded Rock 'EM Sock 'EM
 
 ## Software/Hardware Versions
-### Kinect
+### Install Requirements for Kinect Sensor
 Component           |    Version
 ------------------- | -------------
 Xbox Kinect         |   v1 (USB 2.0)
@@ -11,21 +11,17 @@ IDE                 |   Microsoft Visual Studios 2015
 Language            |   C#
 SDK                 |   [Kinect for Windows v1.8](https://www.microsoft.com/en-us/download/details.aspx?id=40278)
 Bluetooth Adapter   |   Targus 4.0
+Bluetooth Library   |   32Feet (InTheHand.Net)
 
-### Gumstix
-* _Bluetooth Driver_
-  * :warning: [TODO] 
-* _Control Logic_ 
-  * :warning: [TODO] 
-* _I2C Driver_
-  * :warning: [TODO] 
-  
-### Arduino
-Library      |    Link
------------- | -------------
-Servo.h      |   [arduino-libraries/Servo](https://github.com/arduino-libraries/Servo)
-Wire.h       |   [arduino/Arduino](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)
-
+Steps:
+1. Clone this repo
+1. Download the SDk Package from provided link
+   1. Add it to the references for the project
+1. Add 32feet bluetooth package to references
+   1. this can be done with Nuget package manager 
+1. Plug Kinect into any USB 2.0 / 3.0 port
+   1. Plug kinect into PSU
+      
 ## Gumstix Board - I2C Pin Layout
 
 ```
@@ -45,6 +41,21 @@ Wire.h       |   [arduino/Arduino](https://github.com/arduino/Arduino/tree/maste
 - SDA = GPIO_118 = I2C(2), connected to the Ardunio Uno SDA = A4
 - SCL = GPIO_117 = I2C(4), connected to the Ardunio Uno SCL = A5
 - Gumstix powered by power supply unit
+
+Steps:
+1. Copy the program (gumstixmaster) to the gumstix using minicom
+1. Make sure the bluetooth, socket and I2C libraries have been loaded to the board
+
+### Install Requirements for Arduino
+Library      |    Link
+------------ | -------------
+Servo.h      |   [arduino-libraries/Servo](https://github.com/arduino-libraries/Servo)
+Wire.h       |   [arduino/Arduino](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)
+
+Steps:
+1. Download and add both libraries to the Arduino Library folder
+1. Load the arduino script from this repo onto any board with I2C
+   1. See pin layout below
 
 
 ## Arduino Uno - Pin Layout
@@ -84,4 +95,13 @@ Digital Pins
 - Servo 1 Data line = Blue Left Arm,  connected to Arduino D10
 - Each servo's PWR line is connected to the common 5V breadboard power (supplied by Arduino)
 - Each servo's GND line is connected to the common breadboard ground (supplied by Arduino)
+
+## Ready to Run
+Once you have managed to install all of the libraries and packages for each component you are now ready to run our project and throw your first punch (Towards the kinect of course. We do not in any way condone violence!).
+
+Steps:
+1. Plug the pre-loaded arduino (slave) servo controller into a power source
+1. Plug the gumstix into its power source and run ./gumstixmaster within minicom
+1. Plug the kinect in and run its program within MVS
+1. Step back in front of the camera and begin playing!
 
