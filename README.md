@@ -15,12 +15,11 @@ Bluetooth Library   |   32Feet (InTheHand.Net)
 
 Steps:
 1. Clone this repo
-1. Download the SDk Package from provided link
-   1. Add it to the references for the project
+1. Download the SDK Package from provided link
+   1. [TODO] Path to include files
 1. Add 32feet bluetooth package to references
-   1. this can be done with Nuget package manager 
+   1. Use Nuget package manager 
 1. Plug Kinect into any USB 2.0 / 3.0 port
-   1. Plug kinect into PSU
       
 ## Gumstix Board - I2C Pin Layout
 
@@ -43,7 +42,7 @@ Steps:
 - Gumstix powered by power supply unit
 
 Steps:
-1. Copy the program (gumstixmaster) to the gumstix using minicom
+1. Copy the C program (gumstixmaster) to the gumstix using minicom
 1. Make sure the bluetooth, socket and I2C libraries have been loaded to the board
 
 ### Install Requirements for Arduino
@@ -53,10 +52,8 @@ Servo.h      |   [arduino-libraries/Servo](https://github.com/arduino-libraries/
 Wire.h       |   [arduino/Arduino](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)
 
 Steps:
-1. Download and add both libraries to the Arduino Library folder
-1. Load the arduino script from this repo onto any board with I2C
-   1. See pin layout below
-
+1. Download and add both libraries to the Arduino Libraries folder
+1. Load the arduino script from this repo onto any board with I2C capabilities
 
 ## Arduino Uno - Pin Layout
 
@@ -100,8 +97,8 @@ Digital Pins
 Once you have managed to install all of the libraries and packages for each component you are now ready to run our project and throw your first punch (Towards the kinect of course. We do not in any way condone violence!).
 
 Steps:
-1. Plug the pre-loaded arduino (slave) servo controller into a power source
+1. Plug the pre-loaded arduino (slave) servo controller into a power source and wire up the servos
 1. Plug the gumstix into its power source and run ./gumstixmaster within minicom
-1. Plug the kinect in and run its program within MVS
+1. Plug the kinect in and run its C# program within MVS
 1. Step back in front of the camera and begin playing!
 
