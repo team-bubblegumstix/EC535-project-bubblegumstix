@@ -16,7 +16,8 @@ Bluetooth Library   |   32Feet (InTheHand.Net)
 Steps:
 1. Clone this repo
 1. Download the SDK Package from provided link
-   1. [TODO] Path to include files
+   1. C:\Program Files\Microsoft SDKs\Kinect\v1.8\AssembliesC\Microsoft.Kinect.dll
+   1. C:\Program Files\Microsoft SDKs\Kinect\Developer Toolkit v1.8.0\Assemblies\Microsoft.Kinect.Toolkit.dll
 1. Add 32feet bluetooth package to references
    1. Use Nuget package manager 
 1. Plug Kinect into any USB 2.0 / 3.0 port
