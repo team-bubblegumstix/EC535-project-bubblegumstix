@@ -6,7 +6,7 @@ Final Project for EC535 Spring 2017 - Embedded Rock 'EM Sock 'EM
 Component           |    Version
 ------------------- | -------------
 Xbox Kinect         |   v1 (USB 2.0)
-OS                  |   Windows 7
+OS                  |   Windows 7 / 10
 IDE                 |   Microsoft Visual Studios 2015
 Language            |   C#
 SDK                 |   [Kinect for Windows v1.8](https://www.microsoft.com/en-us/download/details.aspx?id=40278)
