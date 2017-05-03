@@ -27,8 +27,8 @@
 
 // Define base values for the kinect readings
 #define MIN_VALID_Y 0       // will correspond to arm above the stomach
-#define MIN_VALID_Z 30      // will correspond to raised arm, against body
-#define MAX_VALID_Z 70      // will correspond to full punch
+#define MIN_VALID_Z 25      // will correspond to raised arm, against body
+#define MAX_VALID_Z 40      // will correspond to full punch
 
 int determine_angle(char arm, int y_data, int z_data){
   int angle_of_change, servo_angle;
