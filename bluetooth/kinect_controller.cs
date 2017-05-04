@@ -13,6 +13,8 @@ namespace Simple_Kinect
 {
     public class Program
     {
+        public static int cycleCounter = 0; // counts the number of times the function is sending data 
+                                            // in order to calculate the sensor sample rate
         private static void kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             Skeleton[] skeletons = new Skeleton[0];
@@ -25,7 +27,7 @@ namespace Simple_Kinect
                     skeletonFrame.CopySkeletonDataTo(skeletons);
                 }
             }
-            
+
             if (skeletons.Length != 0)
             {
                 foreach (Skeleton skel in skeletons)
@@ -42,7 +44,7 @@ namespace Simple_Kinect
                         int rightWrist_Z = (hipCenter_Z - Convert.ToInt32(rightWrist.Z * 100)) < 0 ? 0 : hipCenter_Z - Convert.ToInt32(rightWrist.Z * 100);
                         int rightWrist_Y = (Convert.ToInt32(rightWrist.Y * 100)) < 0 ? 0 : Convert.ToInt32(rightWrist.Y * 100);
 
-                        // Console.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", skel.TrackingId, leftWrist_Z, leftWrist_Y, rightWrist_Z, rightWrist_Y, hipCenter_Z);
+                        Console.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", skel.TrackingId, leftWrist_Z, leftWrist_Y, rightWrist_Z, rightWrist_Y, hipCenter_Z);
 
                         try
                         {
@@ -51,26 +53,27 @@ namespace Simple_Kinect
                             serviceClass = BluetoothService.BluetoothBase;
                             var ep = new BluetoothEndPoint(addr, serviceClass, 2);
                             var cli = new BluetoothClient();
-                            
-                            //Console.WriteLine("Trying to connect...");
+
+                            Console.WriteLine("Trying to connect...");
                             cli.Connect(ep);
-                            //Console.WriteLine("just connected");
+                            Console.WriteLine("just connected");
                             Stream peerStream = cli.GetStream();
 
                             // Send this players left and right arm data
                             string msg = String.Format("{0}{1}{2}{3}{4}", Convert.ToChar(skel.TrackingId), Convert.ToChar(leftWrist_Y), Convert.ToChar(leftWrist_Z), Convert.ToChar(rightWrist_Y), Convert.ToChar(rightWrist_Z));
-                            //Console.WriteLine("Sending msg");
+                            Console.WriteLine("Sending msg");//
                             Byte[] to_send = System.Text.Encoding.ASCII.GetBytes(msg);
                             peerStream.Write(to_send, 0, to_send.Length);
                             peerStream.Close();
                             cli.Close();
-
+                            cycleCounter++;
+                            Console.WriteLine("Number of times called: " + cycleCounter);
                         }
                         catch (Exception)
                         {
                             Console.WriteLine("ERROR: Could not connect to Bluetooth Server");
                         }
-                        Thread.Sleep(100); // 10Hz update rate
+                        //Thread.Sleep(100); // 10Hz update rate
                     }
                 }
             }
