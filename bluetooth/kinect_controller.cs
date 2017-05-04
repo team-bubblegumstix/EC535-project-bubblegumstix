@@ -42,7 +42,7 @@ namespace Simple_Kinect
                         int rightWrist_Z = (hipCenter_Z - Convert.ToInt32(rightWrist.Z * 100)) < 0 ? 0 : hipCenter_Z - Convert.ToInt32(rightWrist.Z * 100);
                         int rightWrist_Y = (Convert.ToInt32(rightWrist.Y * 100)) < 0 ? 0 : Convert.ToInt32(rightWrist.Y * 100);
 
-                        Console.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", skel.TrackingId, leftWrist_Z, leftWrist_Y, rightWrist_Z, rightWrist_Y, hipCenter_Z);
+                        // Console.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", skel.TrackingId, leftWrist_Z, leftWrist_Y, rightWrist_Z, rightWrist_Y, hipCenter_Z);
 
                         try
                         {
@@ -52,14 +52,14 @@ namespace Simple_Kinect
                             var ep = new BluetoothEndPoint(addr, serviceClass, 2);
                             var cli = new BluetoothClient();
                             
-                            Console.WriteLine("Trying to connect...");
+                            //Console.WriteLine("Trying to connect...");
                             cli.Connect(ep);
-                            Console.WriteLine("just connected");
+                            //Console.WriteLine("just connected");
                             Stream peerStream = cli.GetStream();
 
                             // Send this players left and right arm data
                             string msg = String.Format("{0}{1}{2}{3}{4}", Convert.ToChar(skel.TrackingId), Convert.ToChar(leftWrist_Y), Convert.ToChar(leftWrist_Z), Convert.ToChar(rightWrist_Y), Convert.ToChar(rightWrist_Z));
-                            Console.WriteLine("Sending msg");
+                            //Console.WriteLine("Sending msg");
                             Byte[] to_send = System.Text.Encoding.ASCII.GetBytes(msg);
                             peerStream.Write(to_send, 0, to_send.Length);
                             peerStream.Close();

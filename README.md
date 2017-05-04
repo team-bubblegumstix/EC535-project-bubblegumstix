@@ -38,13 +38,15 @@ Steps:
 
 ```
 
-- GND = I2C(1), connected to breadboard common ground
+- GND = I2C(1), connected to Arduino ground
 - SDA = GPIO_118 = I2C(2), connected to the Ardunio Uno SDA = A4
 - SCL = GPIO_117 = I2C(4), connected to the Ardunio Uno SCL = A5
 - Gumstix powered by power supply unit
+- Bluetooth module connected to Bluetooth receiver
+- Gumstix Serial Communication over USB adapter to computer running minicom
 
 Steps:
-1. Copy the C program (gumstixmaster) to the gumstix using minicom
+1. Copy the C program (gumstix_master) to the gumstix using minicom
 1. Make sure the bluetooth, socket and I2C libraries have been loaded to the board
 
 ### Install Requirements for Arduino
@@ -63,7 +65,7 @@ Steps:
 Analog Pins 
  ___________________________________________________________________________________
 |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| SCL | SDA |     |     |     |     |     |     | GND | PWR |     |     |     |     |
+| SCL | SDA |     |     |     |     |     | GND | GND |     |     |     |     |     |
 |_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|
   A5    A4    A3    A2    A1    A0    Vin   GND   GND    5V   3.3V  RST  IOREF
 

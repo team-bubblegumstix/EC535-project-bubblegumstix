@@ -1,7 +1,7 @@
 /*
  * Simple I2C communication test with an Arduino as the slave device.
  * With bluetooth comms from Kinect
- * ble adapted from: https://people.csail.mit.edu/albert/bluez-intro/x502.html
+ * Bluetooth code adapted from: https://people.csail.mit.edu/albert/bluez-intro/x502.html
  */
 
 #include <stdio.h>
@@ -25,10 +25,10 @@
 #define MAX_JAB_L_POS 60    // 60 is MAX Servo Angle in counter-clockwise direction (30 degrees)
 #define MAX_DELTA_SERVO 30
 
-// Define base values for the kinect readings
+// Define base values for the kinect readings 
 #define MIN_VALID_Y 0       // will correspond to arm above the stomach
 #define MIN_VALID_Z 25      // will correspond to raised arm, against body
-#define MAX_VALID_Z 40      // will correspond to full punch
+#define MAX_VALID_Z 40      // will correspond to full punch (MAY NEED Updated under different lighting conditions)
 
 int determine_angle(char arm, int y_data, int z_data){
   int angle_of_change, servo_angle;
@@ -36,7 +36,7 @@ int determine_angle(char arm, int y_data, int z_data){
   // Check if the arm is raised up above hip at least MIN_VALID_Y
   if(y_data > MIN_VALID_Y) {
     if (z_data > MIN_VALID_Z) {
-      // TODO! Calculate the appropriate angle for servo based on data
+      // Calculate the appropriate angle for servo based on data
       if (z_data >= MAX_VALID_Z) {
         if(arm == 'l') {
           return MAX_JAB_L_POS;
