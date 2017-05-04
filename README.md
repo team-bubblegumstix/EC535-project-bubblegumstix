@@ -1,5 +1,7 @@
 # EC535-project-bubblegumstix
 Final Project for EC535 Spring 2017 - Embedded Rock 'EM Sock 'EM
+https://github.com/team-bubblegumstix/EC535-project-bubblegumstix
+https://www.youtube.com/watch?v=RtDk022GyY8
 
 ## Software/Hardware Versions
 ### Install Requirements for Kinect Sensor
